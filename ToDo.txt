@@ -1,2 +1,9 @@
 - delete arrows after a while
-- Reformat code
+
+
+TroubleShooting
+
+require syntax:
+    - require("path)
+
+you always have to save each individual file every time you make a change with ctrl + s
