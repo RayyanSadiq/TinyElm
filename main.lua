@@ -13,9 +13,11 @@ function love.load()
     camera = cameraFile(nil, nil)
 
     world = windField.newWorld()
+    world:setQueryDebugDrawing(true)
     world:addCollisionClass('Player')
     world:addCollisionClass('Boundry')
     world:addCollisionClass('Arrow')
+    world:addCollisionClass('Treant')
    
     require("require")  -- requires for other .lua files must be in parathensis
     requireAll()
@@ -29,21 +31,29 @@ function love.update(dt)
     world:update(dt)
     playerUpdate(dt)
     arrowUpdate(dt)
+    treantUpdate(dt)
     gameMap:update(dt)
     camera:lookAt(player.collider:getX(), player.collider:getY())
 end
 
 function love.draw()
+
+    for index, treant in ipairs(treants) do
+        love.graphics.print(treant.direction)
+    end
+
     camera:attach()
 
     -- gameMap:drawLayer(gameMap.layers['BaseLayer'])
     gameMap:drawLayer(gameMap.layers['DecorLayer'])
     gameMap:drawLayer(gameMap.layers['TreeLayer'])
-    world:draw()
+    --world:draw()
     playerDraw()
     drawArrow()
+    treantDraw()
 
     camera:detach()
+  
 end
 
 function love.keypressed(key)
@@ -71,6 +81,11 @@ function loadMap(mapName)
     for index, object in pairs(gameMap.layers["Boundries"].objects) do
         makeBoundry(object.x, object.y, object.width, object.height)
     end
+
+    for index, object in pairs(gameMap.layers["TreantLayer"].objects) do
+        spawnTreant(object.x, object.y)
+    end
+
 end
 
 function makeBoundry(x, y, width, height)

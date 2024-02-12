@@ -30,3 +30,23 @@ sprites.player.animations.walk.left = anim8.newAnimation(sprites.player.grid('1-
 -- Arrow graphics
 sprites.arrow = {}
 sprites.arrow.sprite = love.graphics.newImage('tiny-RPG-forest-files/PNG/sprites/misc/arrow.png')
+
+-- Treant graphics
+sprites.treant = {}
+sprites.treant.spriteSheet = love.graphics.newImage('tiny-RPG-forest-files/PNG/spritesheets/treant/treant-sprite-sheet.png')
+sprites.treant.grid = anim8.newGrid(31, 35, sprites.treant.spriteSheet:getWidth(), sprites.treant.spriteSheet:getHeight())
+sprites.treant.animations = {}
+
+-- Treant idle animations
+sprites.treant.animations.idle = {}
+sprites.treant.animations.idle.up = anim8.newAnimation(sprites.treant.grid('1-1', 1), 100)
+sprites.treant.animations.idle.down = anim8.newAnimation(sprites.treant.grid('1-1', 2), 100)
+sprites.treant.animations.idle.right = anim8.newAnimation(sprites.treant.grid('1-1', 3), 100)
+sprites.treant.animations.idle.left = anim8.newAnimation(sprites.treant.grid('1-1', 4), 100)
+
+-- Treant walk animations
+sprites.treant.animations.walk = {}
+sprites.treant.animations.walk.up = anim8.newAnimation(sprites.treant.grid('1-4', 5), 0.25)
+sprites.treant.animations.walk.down = anim8.newAnimation(sprites.treant.grid('1-4', 6), 0.25)
+sprites.treant.animations.walk.right = anim8.newAnimation(sprites.treant.grid('1-4', 7), 0.25)
+sprites.treant.animations.walk.left = anim8.newAnimation(sprites.treant.grid('1-4', 8), 0.25)

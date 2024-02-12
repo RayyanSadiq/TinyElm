@@ -3,7 +3,7 @@ player.collider = world:newRectangleCollider(0, 0, 48, 82, { collision_class = "
 player.collider:setFixedRotation(true)
 player.collider:setX(2700)
 player.collider:setY(2000)
-player.speed = 300
+player.speed = 250
 player.direction = 'down'
 player.perfromingAction = false
 player.isFullyDrawn = false

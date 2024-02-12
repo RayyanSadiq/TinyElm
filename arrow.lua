@@ -1,13 +1,35 @@
 arrows = {}
 
 function arrowUpdate(dt)
-    for index, arrow in ipairs(arrows) do
+    for i, arrow in ipairs(arrows) do
         arrow.collider:setLinearVelocity(arrow.speed.x, arrow.speed.y)
 
-        if arrow.collider:enter('Boundry') then
-            arrow.collider:destroy()
-            table.remove(arrows, index)
+        local directionalSettings = {
+
+            up = { xOffset = -8, yOffset = -30 },
+            down = { xOffset = -8, yOffset = -28  },
+            right = { xOffset = -28, yOffset = -8 },
+            left = { xOffset = -28, yOffset = -8 },
+            
+        }
+
+         local hitEnemies = world:queryRectangleArea(
+            arrow.collider:getX() + directionalSettings[arrow.direction].xOffset ,  
+            arrow.collider:getY() + directionalSettings[arrow.direction].yOffset , 
+            arrow.width, arrow.height, 
+            {'Treant'} )
+
+        for _, treant in ipairs(hitEnemies) do
+            treant.health = treant.health - 10
         end
+
+        if arrow.collider:enter('Boundry') or #hitEnemies > 0 then
+            arrow.collider:destroy()
+            table.remove(arrows, i)
+        end
+
+
+
     end
 end
 
@@ -15,8 +37,6 @@ function drawArrow()
     count = 0
     for i in pairs(arrows) do count = count + 1 end
 
-
-    love.graphics.print(count)
     for index, arrow in ipairs(arrows) do
         love.graphics.draw(
             arrow.sprite,
@@ -33,6 +53,7 @@ end
 function spawnArrow(direction)
     local arrow = {}
     arrow.sprite = sprites.arrow.sprite
+    arrow.damage = 10
     arrow.direction = direction
     arrow.speed = { x = 0, y = 0 }
     arrow.scale = 3
