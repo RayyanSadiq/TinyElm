@@ -9,6 +9,7 @@ function love.load()
     windField = require 'libraries/windfield/windfield'
     sti = require 'libraries/Simple-Tiled-Implementation/sti'
     cameraFile = require 'libraries/hump/camera'
+    flux = require 'libraries/flux'
 
     camera = cameraFile(nil, nil)
 
@@ -25,29 +26,30 @@ function love.load()
     boundries = {}
 
     loadMap("TutorialMap")
+
 end
 
 function love.update(dt)
     world:update(dt)
     playerUpdate(dt)
-    arrowUpdate(dt)
+    arrowUpdate(dt) 
     treantUpdate(dt)
+    flux.update(dt)
     gameMap:update(dt)
-    camera:lookAt(player.collider:getX(), player.collider:getY())
-end
+    camera:lookAt(player:getX(), player:getY())
+end 
 
 function love.draw()
 
-    for index, treant in ipairs(treants) do
-        love.graphics.print(treant.direction)
-    end
+    love.graphics.print(camera.scale)
 
     camera:attach()
 
     -- gameMap:drawLayer(gameMap.layers['BaseLayer'])
+    
     gameMap:drawLayer(gameMap.layers['DecorLayer'])
     gameMap:drawLayer(gameMap.layers['TreeLayer'])
-    --world:draw()
+    world:draw()
     playerDraw()
     drawArrow()
     treantDraw()
@@ -62,18 +64,7 @@ function love.keypressed(key)
     end
 end
 
-function love.mousereleased(x, y, button, istouch, presses)
-    if button == 1 then
-        if player.isFullyDrawn then
-            spawnArrow(player.direction)
-        end
 
-        player.currentAnimation:gotoFrame(1)
-        player.currentAnimation:resume()
-        player.perfromingAction = false
-        player.isFullyDrawn = false
-    end
-end
 
 function loadMap(mapName)
     gameMap = sti("maps/" .. mapName .. ".lua")
@@ -93,6 +84,7 @@ function makeBoundry(x, y, width, height)
         local boundry = world:newRectangleCollider(x, y, width, height, { collision_class = "Boundry" })
         boundry:setType("static")
         table.insert(boundries, boundry)
+    
     end
 end
 

@@ -4,4 +4,5 @@ function requireAll()
     require("player")
     require('arrow')
     require('treant')
+     
 end

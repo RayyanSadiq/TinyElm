@@ -1,9 +1,14 @@
-- delete arrows after a while
+TODO: 
+- refactor classes and clean up code
+- add documentation
+- add arrow trail
+- make treant attack animations
+- add death animations
 
 
 TroubleShooting
 
 require syntax:
-    - require("path)
+    - require("path")
 
 you always have to save each individual file every time you make a change with ctrl + s

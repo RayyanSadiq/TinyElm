@@ -3,13 +3,14 @@ arrows = {}
 function arrowUpdate(dt)
     for i, arrow in ipairs(arrows) do
         arrow.collider:setLinearVelocity(arrow.speed.x, arrow.speed.y)
+        arrow.lifeTime = arrow.lifeTime - dt
 
         local directionalSettings = {
 
             up = { xOffset = -8, yOffset = -30 },
-            down = { xOffset = -8, yOffset = -28  },
-            right = { xOffset = -28, yOffset = -8 },
-            left = { xOffset = -28, yOffset = -8 },
+            down = { xOffset = -8, yOffset = -30  },
+            right = { xOffset = -26, yOffset = -8 },
+            left = { xOffset = -32, yOffset = -8 },
             
         }
 
@@ -20,10 +21,13 @@ function arrowUpdate(dt)
             {'Treant'} )
 
         for _, treant in ipairs(hitEnemies) do
-            treant.health = treant.health - 10
+            treant.health = treant.health - arrow.damage
+            treant.isHit = true
+            treant.hitTimer = treant.initialHitTimer
+            love.graphics.setColor(1,1,1)
         end
 
-        if arrow.collider:enter('Boundry') or #hitEnemies > 0 then
+        if arrow.collider:enter('Boundry') or #hitEnemies > 0 or arrow.lifeTime <= 0 then
             arrow.collider:destroy()
             table.remove(arrows, i)
         end
@@ -47,6 +51,8 @@ function drawArrow()
             nil,
             arrow.sprite:getWidth() / 2,
             arrow.sprite:getHeight() / 2)
+            
+         
     end
 end
 
@@ -54,6 +60,7 @@ function spawnArrow(direction)
     local arrow = {}
     arrow.sprite = sprites.arrow.sprite
     arrow.damage = 10
+    arrow.lifeTime = 0.8
     arrow.direction = direction
     arrow.speed = { x = 0, y = 0 }
     arrow.scale = 3
@@ -84,8 +91,8 @@ function spawnArrow(direction)
 
     -- Create arrow collider
     arrow.collider = world:newRectangleCollider(
-        player.collider:getX() + arrow.playerXOffset,
-        player.collider:getY() - arrow.playerYOffset,
+        player:getX() + arrow.playerXOffset,
+        player:getY() - arrow.playerYOffset,
         arrow.width,
         arrow.height,
         { collision_class = 'Arrow' }

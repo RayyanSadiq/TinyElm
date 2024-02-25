@@ -1,20 +1,21 @@
-player = {}
-player.collider = world:newRectangleCollider(0, 0, 48, 82, { collision_class = "Player" })
-player.collider:setFixedRotation(true)
-player.collider:setX(2700)
-player.collider:setY(2000)
+player = world:newRectangleCollider(0, 0, 48, 82, { collision_class = "Player" })
+player:setFixedRotation(true)
+player:setX(2700)
+player:setY(2000)
 player.speed = 250
 player.direction = 'down'
-player.perfromingAction = false
+player.isDrawingBow = false
 player.isFullyDrawn = false
 player.currentAnimation = sprites.player.animations.idle.down
+player.bowTween = false
+player.bowTweenTimer = 0.2
 
-
+ 
 function playerUpdate(dt)
     local vectorX, vectorY = 0, 0
     local isMoving = false
 
-    if player.perfromingAction == false then
+    if player.isDrawingBow == false then
         if love.keyboard.isDown("w") then
             vectorY = -1
             player.direction = 'up'
@@ -55,13 +56,22 @@ function playerUpdate(dt)
         vectorY = vectorY / length
     end
 
-    player.collider:setLinearVelocity(vectorX * player.speed, vectorY * player.speed)
+    player:setLinearVelocity(vectorX * player.speed, vectorY * player.speed)
 
 
     if love.mouse.isDown(1) then
-        player.perfromingAction = true
-
+        player.isDrawingBow = true
         player.currentAnimation = sprites.player.animations.bow[player.direction]
+
+        if player.bowTweenTimer > 0 then
+            player.bowTweenTimer = player.bowTweenTimer - dt
+        end
+
+        if player.bowTweenTimer <= 0 then
+            flux.to(camera, 0.4, {scale = 1.2})
+            
+        end
+        
 
         if player.currentAnimation.position == 3 then
             player.isFullyDrawn = true
@@ -70,8 +80,26 @@ function playerUpdate(dt)
     end
 
     player.currentAnimation:update(dt)
+    
 end
 
 function playerDraw ()
-    player.currentAnimation:draw(sprites.player.spriteSheet, player.collider:getX(), player.collider:getY(), nil, 4 , nil, 15, 20)
+    player.currentAnimation:draw(sprites.player.spriteSheet, player:getX(), player:getY(), nil, 4 , nil, 15, 20)
+
+end
+
+function love.mousereleased(x, y, button, istouch, presses)
+    if button == 1 then
+         
+        if player.isFullyDrawn then
+            spawnArrow(player.direction)
+        end
+     
+        flux.to(camera, 0.2, {scale = 1})
+        player.bowTweenTimer = 0.2
+        player.currentAnimation:gotoFrame(1)
+        player.currentAnimation:resume()
+        player.isDrawingBow = false
+        player.isFullyDrawn = false
+    end
 end
